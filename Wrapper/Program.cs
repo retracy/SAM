@@ -16,13 +16,8 @@ namespace Wrapper
 
         private unsafe static void TestGetDeviceInfo()
         {
-            var info = new DeviceInfo
-            {
-                Version = 1
-            };
-
+            var info = new DeviceInfo();
             IntPtr pinfo = Marshal.AllocHGlobal(Marshal.SizeOf(info));
-            Marshal.StructureToPtr(info, pinfo, true);
 
             // Call to unmanaged code
             GetDeviceInfo(pinfo);
@@ -42,7 +37,6 @@ namespace Wrapper
         {
             var list = new DeviceList();
             IntPtr plist = Marshal.AllocHGlobal(Marshal.SizeOf(list));
-            Marshal.StructureToPtr(list, plist, true);
 
             // Call to unmanaged code
             GetDeviceList(plist);
