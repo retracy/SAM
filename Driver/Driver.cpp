@@ -2,11 +2,13 @@
 
 #define DRIVER_API extern "C" __declspec(dllexport)
 
+#define MAX_NAME_LENGTH 32
 #define MAX_DEVICE_COUNT 4
 
 typedef struct _DeviceInfo
 {
 	UINT32 Version;
+	char Name[MAX_NAME_LENGTH];
 } DeviceInfo;
 
 typedef struct _DeviceList
@@ -17,19 +19,15 @@ typedef struct _DeviceList
 
 DRIVER_API void GetDeviceInfo(DeviceInfo* info)
 {
-	info->Version = 34;
+	info->Version = 16;
+	strcpy_s(info->Name, MAX_NAME_LENGTH, "Pebbles");
 }
 
-DRIVER_API void GetDeviceList(DeviceList devices)
+DRIVER_API void GetDeviceList(DeviceList* devices)
 {
-	devices.Count = 2;
-	devices.Devices[0].Version = 56;
-	devices.Devices[1].Version = 78;
-}
-
-// This is an example of an exported function.
-DRIVER_API void NativeTest(void)
-{
-	DeviceList devices;
-	GetDeviceList(devices);
+	devices->Count = 2;
+	devices->Devices[0].Version = 36;
+	strcpy_s(devices->Devices[0].Name, MAX_NAME_LENGTH, "Betty");
+	devices->Devices[1].Version = 37;
+	strcpy_s(devices->Devices[1].Name, MAX_NAME_LENGTH, "Wilma");
 }
