@@ -13,7 +13,7 @@ do
 done
 
 OPTIONS="-d --force -x $QUIET"
-EXCLUDES="--exclude=*.user --exclude=*.suo --exclude=*.sdf --exclude=*.opensdf --exclude=.vs
+EXCLUDES="--exclude=*.user --exclude=*.suo --exclude=*.sdf --exclude=*.opensdf --exclude=.vs"
 
 git clean $OPTIONS $EXCLUDES "$ROOTDIR"
 git submodule foreach --recursive "git clean $OPTIONS $EXCLUDES"
