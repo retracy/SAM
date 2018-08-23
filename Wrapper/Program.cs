@@ -8,13 +8,16 @@ namespace Wrapper
     {
         public static void Main(string[] args)
         {
+            GetErrorString(0, out var text);
+            Debug.WriteLine($"text = {text}");
+
             TestGetDeviceInfo();
             TestGetDeviceList();
         }
 
         #region TestGetDeviceInfo
 
-        private unsafe static void TestGetDeviceInfo()
+        private static unsafe void TestGetDeviceInfo()
         {
             var info = new DeviceInfo();
             IntPtr pinfo = Marshal.AllocHGlobal(Marshal.SizeOf(info));
@@ -23,7 +26,6 @@ namespace Wrapper
             GetDeviceInfo(pinfo);
 
             info = (DeviceInfo)Marshal.PtrToStructure(pinfo, typeof(DeviceInfo));
-            var str = new string(info.Name);
 
             Debug.WriteLine("GetDeviceInfo results:");
             Debug.WriteLine($"Name: \"{new string(info.Name)}\", Version: {info.Version}");
@@ -57,10 +59,15 @@ namespace Wrapper
         #region P/Invoke support
 
         [DllImport("Driver.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern static private void GetDeviceInfo(IntPtr pinfo);
+        private static extern void GetDeviceInfo(IntPtr pinfo);
 
         [DllImport("Driver.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern static private void GetDeviceList(IntPtr plist);
+        private static extern void GetDeviceList(IntPtr plist);
+
+        [DllImport("Driver.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void GetErrorString(uint error,
+            [MarshalAs(UnmanagedType.LPStr)]
+            out string text);
 
         const int MAX_NAME_LENGTH = 32;
         const int MAX_DEVICE_COUNT = 4;
@@ -74,7 +81,7 @@ namespace Wrapper
             public fixed sbyte Name[MAX_NAME_LENGTH];
         }
 
-        public unsafe struct DeviceList
+        public struct DeviceList
         {
             // Disable 0649 compiler warning for values written by Marshal
 #pragma warning disable 0649
