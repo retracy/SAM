@@ -35,6 +35,7 @@ DRIVER_API void GetDeviceList(DeviceList* devices)
 
 DRIVER_API void GetErrorString(unsigned int error, char ** description)
 {
-	*description = (char *)CoTaskMemAlloc(MAX_ERROR_LENGTH);
-	strcpy_s(*description, MAX_ERROR_LENGTH, "Boom");
+	//*description = (char *)CoTaskMemAlloc(MAX_ERROR_LENGTH);
+	*description = (char *)malloc(MAX_ERROR_LENGTH);
+	strcpy_s(*description, MAX_ERROR_LENGTH, "Good");
 }

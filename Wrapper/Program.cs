@@ -8,12 +8,23 @@ namespace Wrapper
     {
         public static void Main(string[] args)
         {
-            GetErrorString(0, out var text);
-            Debug.WriteLine($"text = {text}");
-
+            TestErrorString();
             TestGetDeviceInfo();
             TestGetDeviceList();
         }
+
+        #region TestErrorString
+
+        private static void TestErrorString()
+        {
+            GetErrorString(111, out var ptext);
+            Debug.WriteLine($"text = {Marshal.PtrToStringAnsi(ptext)}");
+
+            GRTS_GetErrorStr(111, out var pgrtext);
+            Debug.WriteLine($"text = {Marshal.PtrToStringAnsi(pgrtext)}");
+        }
+
+        #endregion
 
         #region TestGetDeviceInfo
 
@@ -35,7 +46,7 @@ namespace Wrapper
 
         #region TestGetDeviceList
 
-        private unsafe static void TestGetDeviceList()
+        private static unsafe void TestGetDeviceList()
         {
             var list = new DeviceList();
             IntPtr plist = Marshal.AllocHGlobal(Marshal.SizeOf(list));
@@ -43,7 +54,7 @@ namespace Wrapper
             // Call to unmanaged code
             GetDeviceList(plist);
 
-            list = (DeviceList)Marshal.PtrToStructure(plist, typeof(DeviceList));
+            list = (DeviceList) Marshal.PtrToStructure(plist, typeof(DeviceList));
 
             Debug.WriteLine("GetDeviceList results:");
             Debug.WriteLine($"Count: {list.Count}");
@@ -54,7 +65,7 @@ namespace Wrapper
             }
         }
 
-        #endregion
+        #endregion 
 
         #region P/Invoke support
 
@@ -64,10 +75,11 @@ namespace Wrapper
         [DllImport("Driver.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void GetDeviceList(IntPtr plist);
 
+        [DllImport("GRTS_API.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void GRTS_GetErrorStr(uint error, out IntPtr text);
+
         [DllImport("Driver.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void GetErrorString(uint error,
-            [MarshalAs(UnmanagedType.LPStr)]
-            out string text);
+        private static extern void GetErrorString(uint error, out IntPtr text);
 
         const int MAX_NAME_LENGTH = 32;
         const int MAX_DEVICE_COUNT = 4;
