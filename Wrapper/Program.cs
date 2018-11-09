@@ -4,14 +4,29 @@ using System.Runtime.InteropServices;
 
 namespace Wrapper
 {
-    class Program
+    internal class Program
     {
         public static void Main(string[] args)
         {
+            TestRegisters();
             TestErrorString();
             TestGetDeviceInfo();
             TestGetDeviceList();
         }
+
+        #region TestRegisters
+
+        private static void TestRegisters()
+        {
+            uint[] data = new uint [64];
+            GetRegisters(data);
+            for (int i = 0; i < data.Length; i++)
+            {
+                Debug.WriteLine($"data[{i:D2}] = {data[i]}");
+            }
+        }
+
+        #endregion
 
         #region TestErrorString
 
@@ -80,6 +95,12 @@ namespace Wrapper
 
         [DllImport("Driver.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void GetErrorString(uint error, out IntPtr text);
+
+        [DllImport("Driver.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void GetRegisters(
+            [MarshalAs(UnmanagedType.LPArray, SizeConst = 64)]
+            uint[] data
+        );
 
         const int MAX_NAME_LENGTH = 32;
         const int MAX_DEVICE_COUNT = 4;

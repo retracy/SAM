@@ -39,3 +39,11 @@ DRIVER_API void GetErrorString(unsigned int error, char ** description)
 	*description = (char *)malloc(MAX_ERROR_LENGTH);
 	strcpy_s(*description, MAX_ERROR_LENGTH, "Good");
 }
+
+DRIVER_API void GetRegisters(unsigned int data[64])
+{
+	for (size_t i = 0; i < 64; i++)
+	{
+		data[i] = i * 2;
+	}
+}
